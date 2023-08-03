@@ -1,0 +1,10 @@
+.banner {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search {
+    border: 1px solid black;
+}

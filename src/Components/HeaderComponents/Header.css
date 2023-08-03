@@ -1,0 +1,17 @@
+.header {
+    height: 50px;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+
+}
+
+.nav {
+    width: 25vw;
+    display: flex;
+    justify-content: space-evenly;
+}
