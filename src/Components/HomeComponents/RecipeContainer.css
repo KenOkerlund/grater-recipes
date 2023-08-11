@@ -3,17 +3,10 @@
     height: 100px;
     width: 100vw;
     display: flex;
+    justify-content: space-evenly;
 }
 
 .recipe-gallery {
     display: flex;
     gap: 20px;
-}
-
-
-.card {
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
 }
