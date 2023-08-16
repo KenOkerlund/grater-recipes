@@ -4,8 +4,6 @@ import RecipeCard from './RecipeCard'
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-const dummy_data = [{ title: "Test1", text: "text1" }, { title: "Test2", text: 'text2' }];
-
 const RecipeContainer = () => {
 
     const [recipeCards, setRecipeCards] = useState([]);
@@ -21,9 +19,7 @@ const RecipeContainer = () => {
         getRecipeCards()
     }, []);
 
-    console.log(recipeCards)
-
-    const recipeCard = recipeCards.map((pictureAndTitle) => {
+    const recipeDisplay = recipeCards.map((pictureAndTitle) => {
         return (
             <RecipeCard recipe={pictureAndTitle} />
         )
@@ -33,7 +29,7 @@ const RecipeContainer = () => {
     return (
         <section className='recipe-section'>
             <div className="recipe-gallery">
-                {recipeCard}
+                {recipeDisplay}
             </div>
         </section>
     )

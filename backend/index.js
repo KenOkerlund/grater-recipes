@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const { PORT } = process.env;
 
-const { seed, getTest, getRecipeCard } = require('./controller')
+const { seed, getTest, getRecipeCard, getRecipeDetails } = require('./controller')
 
 const app = express();
 
@@ -21,6 +21,8 @@ app.get('/test', getTest)
 
 //get all the recipes for the logged in user
 app.get('/recipe-cards', getRecipeCard)
+//get the individual recipe details for the card that was clicked
+app.get('/recipe/:id', getRecipeDetails)
 
 
 
