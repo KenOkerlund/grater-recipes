@@ -1,0 +1,77 @@
+.recipe-display {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    min-width: 650px;
+    max-width: 1200px;
+    margin-top: 50px;
+}
+
+.recipe-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #326273;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.recipe-info {
+    display: flex;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    padding: 2rem 0 0 2rem;
+    justify-content: center;
+}
+
+.recipe-alter-quantity {
+    gap: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-right: .8rem;
+}
+
+.math-button {
+    background-color: #E39774;
+    color: #FFFFFF;
+    font-weight: bold;
+    width: 1.5rem;
+    height: 1.5rem;
+    box-shadow: 2px 2px 2px #1C2826;
+}
+
+.recipe-content {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 1.5rem;
+    background-color: #EEEEEE;
+    gap: 2rem;
+}
+
+.ingredients {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-right: 1px solid black;
+}
+
+.instructions {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 15vw;
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.detail-image {
+    width: 200px;
+    object-fit: cover;
+}
+
+.detail{
+    font-weight: bold;
+}

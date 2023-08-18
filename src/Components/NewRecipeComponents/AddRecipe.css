@@ -1,0 +1,15 @@
+.new-recipe-display{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-recipe{
+    display: flex;
+    flex-direction: column;
+}
+
+.add-recipe{
+    display: flex;
+    flex-direction: column;
+}
