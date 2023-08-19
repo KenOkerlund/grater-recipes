@@ -39,8 +39,8 @@ const DetailScreen = () => {
                 </div>
             </div>
             <div className='recipe-info'>
-                <h6 classname="detail">Time: {recipe.time_to_make}</h6>
-                <h6 classname="detail">Servings: {recipe.servings}</h6>
+                <h6 className="detail">Time: {recipe.time_to_make}</h6>
+                <h6 className="detail">Servings: {recipe.servings}</h6>
             </div>
             <div className='recipe-content'>
                 <div className='ingredients'>
@@ -50,7 +50,7 @@ const DetailScreen = () => {
                     })}
                 </div>
                 <div className='instructions'>
-                    <h2 classname="detail">Instructions:</h2>
+                    <h2 className="detail">Instructions:</h2>
                     {recipe.instruction.map((instr, i) => {
                         return <><p key={i}>{i + 1}{"."} {instr.instructionText} </p><br /></>
                     })}

@@ -1,6 +1,5 @@
 require("dotenv").config();
 const { CONNECTION_STRING } = process.env;
-const { getValue } = require("@testing-library/user-event/dist/utils");
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
