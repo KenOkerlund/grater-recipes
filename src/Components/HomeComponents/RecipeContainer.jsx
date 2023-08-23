@@ -16,7 +16,7 @@ const RecipeContainer = () => {
     }
 
     useEffect(() => {
-        getRecipeCards()
+        getRecipeCards();
     }, []);
 
     const recipeDisplay = recipeCards.map((pictureAndTitle) => {

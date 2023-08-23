@@ -1,39 +1,53 @@
 /*
-How to remove e from my form number inputs
+Need to:
 
+1. be able to delete form rows in case someone messes up data entry
 
-Need to have the ability to duplicate form inputs (ingredients and instructions)
-    Need to have my array based inputs actually insert an array into state
+2. add the "can't be zero" or "cannot be empty" logic to the other form areas
 
-
+3. Allow .5 or 1/2 measurement types not just digits
 */
 
 import './AddRecipe.css'
 
 import { useState } from 'react';
+import axios from 'axios';
 
 function filterNonDigitsAndMakeNumber(stringWithPossibleNonDigits) {
     return Number(stringWithPossibleNonDigits.replace(/[^0-9]/g, ''));
-}
+};
+
 
 const AddRecipe = () => {
     const [state, setState] = useState({
-        title: "Gmas GG Cookies",
+        title: "",
         imageURL: "",
-        servings: 1,
-        timeToMake: 1,
+        servings: 0,
+        timeToMake: 0,
         ingredients: [
             {
-                quantity: 1,
-                ingredient: 'Cup of Flour',
+                quantity: 0,
+                ingredient: '',
             },
-            {
-                quantity: 2,
-                ingredient: 'Cups of BUTTER',
-            }
+            // {
+            //     quantity: 2,
+            //     ingredient: 'Cups of BUTTER',
+            // }
         ],
-        instructions: []
+        instructions: [
+            {
+                instructionText: ''
+            }
+        ]
     });
+
+    function postAddRecipeForm() {
+        console.log('REACHED HERE')
+        axios.post('http://localhost:5432/add-recipe/submit', {body: state})
+            .then(res => {
+                console.log(res.data);
+            })
+    };
 
     const setStateField = (name, value) => {
         setState({
@@ -51,6 +65,7 @@ const AddRecipe = () => {
         newIngredients[i].quantity = filterNonDigitsAndMakeNumber(e.target.value);
         setStateField("ingredients", newIngredients);
     };
+
     const handleIngredientIngredientChange = (e, i) => {
         const newIngredients = [...state.ingredients];
         newIngredients[i].ingredient = e.target.value;
@@ -65,9 +80,26 @@ const AddRecipe = () => {
         setStateField('ingredients', newIngredients)
     };
 
+    const handleInstructionChange = (e, i) => {
+        const newInstructions = [...state.instructions];
+        newInstructions[i].instructionText = e.target.value;
+        setStateField("instructions", newInstructions);
+    };
+
+    const handleAddInstruction = () => {
+        const newInstructions = [...state.instructions, {
+            instructionText: ""
+        }];
+        setStateField('instructions', newInstructions);
+    };
+
     const isAddIngredientButtonDisabled = state.ingredients.some((ingredient) => {
         return ingredient.quantity === '' || ingredient.quantity === 0 || ingredient.ingredient.trim() === '';
     });
+
+    const isAddInstructionButtonDisabled = state.instructions.some((instruction) => {
+        return instruction.instructionText.trim() === '';
+    })
 
     console.log(state);
 
@@ -81,7 +113,7 @@ const AddRecipe = () => {
                 </div>
             </form>
             <div className='new-recipe'>
-                <form>
+                <form onSubmit={postAddRecipeForm}>
                     <h4>Make from scratch:</h4>
                     <div className='form-div'>
                         <input type="text" placeholder='Recipe Name' name="title" value={state.title} onChange={handleNameChange} />
@@ -100,12 +132,17 @@ const AddRecipe = () => {
                                 </div>
                             );
                         })}
-
                         <button disabled={isAddIngredientButtonDisabled} type="button" onClick={handleAddIngredient}>Next ingredient</button>
                     </div>
                     <div className='form-div'>
-                        <input type="text" placeholder='Instruction' name="instruction" value={state.instruction} onChange={setStateField} />
-                        <button type='button'>Next instruction</button>
+                        {state.instructions.map((instruction, i) => {
+                            return (
+                                <div key={i}>
+                                    <input type="text" placeholder='Instruction' name="instruction" value={instruction.instruction} onChange={(e) => handleInstructionChange(e, i)} />
+                                </div>
+                            );
+                        })}
+                        <button disabled={isAddInstructionButtonDisabled} type='button' onClick={handleAddInstruction}>Next instruction</button>
                     </div>
                     <button type='submit'>Submit</button>
                 </form >

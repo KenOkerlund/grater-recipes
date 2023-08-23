@@ -124,6 +124,18 @@ function getRecipeDetails(req, res) {
         `SELECT * FROM recipes WHERE recipe_id = '${id}'`
     ).then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
+};
+
+function postRecipeForm(req, res) {
+    const { body } = req.body;
+    const quantity_ingredient = JSON.stringify(body.ingredients);
+    const instructionText = JSON.stringify(body.instructions);
+    console.log(body);
+    sequelize.query(
+        `INSERT INTO recipes (recipe_name, recipe_image, user_id, time_to_make, servings, quantity_ingredient, instruction)
+        VALUES ('${body.title}', '${body.imageURL}', '1', '${body.timeToMake}', '${body.servings}', '${quantity_ingredient}', '${instructionText}')`
+    ).then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err));
 }
 
 module.exports = {
@@ -131,25 +143,5 @@ module.exports = {
     getTest,
     getRecipeCard,
     getRecipeDetails,
+    postRecipeForm,
 };
-
-// const instructions = ['1/2 cup butter', '3 handfulls of sugar (powdered)'];
-// // ---
-// // [1][cup of butter]
-// // ---
-// // [ + ]
-
-// const payloadThatisGoinToTheBe = [
-//     {
-//         quantity: 1,
-//         ingredient: 'cup of butter (Auntie Anns because is de best)',
-//     },
-//     {
-//         quantity: 2,
-//         ingredient: 'cups of water (room temp)',
-//     }
-// ];
-
-// const BEGets = JSON.stringify(payloadThatisGoinToTheBe);
-
-// const beforeGoingToFE = JSON.parse(stringStoredInDB);
