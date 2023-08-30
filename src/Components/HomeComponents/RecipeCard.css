@@ -1,16 +1,28 @@
 .card {
-    height: 250px;
-    width: 200px;
-    border: 1px solid black;
+    height: 350px;
+    width: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
+    position: relative;
 }
 
+.gallery-image {
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+}
 
-.card-image {
+.card-title {
+    height: 50px;
+    position: absolute;
+    bottom: 0px;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100px;
+    width: inherit;
+    background-color: black;
+    opacity: 70%;
+    color: white;
 }

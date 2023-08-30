@@ -1,27 +1,15 @@
-/*
-Need to:
-
-1. be able to delete form rows in case someone messes up data entry
-
-Find a way to be able to limit my quantity string to just digits and "/"
-*/
-
-import './AddRecipe.css'
+import './EditModal.css'
 
 import { useState } from 'react';
 import axios from 'axios';
-import CopyRecipe from './CopyRecipe';
+import { useEffect } from 'react';
 
 function filterNonDigitsAndMakeNumber(stringWithPossibleNonDigits) {
     return Number(stringWithPossibleNonDigits.replace(/[^0-9]/g, ''));
 };
 
-function filterNonDigitsAndSlash(stringWithPossibleNonDigitsOrSlash) {
-    return stringWithPossibleNonDigitsOrSlash.replace(/^[0-9\/]*$/)
-}
 
-
-const AddRecipe = () => {
+const EditModal = (props) => {
     const [state, setState] = useState({
         title: "",
         imageURL: "",
@@ -36,16 +24,13 @@ const AddRecipe = () => {
         instructions: [
             {
                 instructionText: ''
-            },
+            }
         ]
     });
 
-    function postAddRecipeForm() {
-        axios.post('http://localhost:5432/add-recipe/submit', { body: state })
-            .then(res => {
-                console.log(res.data);
-            })
-    };
+    const putEditRecipeForm = () => {
+
+    }
 
     const setStateField = (name, value) => {
         setState({
@@ -53,6 +38,25 @@ const AddRecipe = () => {
             [name]: value
         });
     };
+
+    useEffect(() => {
+        updateTheStateWithCurrentRecipe();
+    }, []);
+
+    const setStateOnLoad = (name, value) => {
+        setState({
+            [name]: value 
+        });
+    };
+
+    function updateTheStateWithCurrentRecipe() {
+        // setStateOnLoad('title', props.recipe.recipe_name);
+        // setStateOnLoad('imageURL', props.recipe.recipe_image);
+        // setStateOnLoad('servings', props.recipe.servings);
+        // setStateOnLoad('timeToMake', props.recipe.time_to_make);
+        // setStateOnLoad('ingredients', props.recipe.quantity_ingredient);
+        // setStateOnLoad('instructions', props.recipe.instruction);
+    }
 
     const handleNameChange = (e) => setStateField('title', e.target.value);
     const handleImageURLChange = (e) => setStateField('imageURL', e.target.value);
@@ -95,16 +99,8 @@ const AddRecipe = () => {
     };
 
     const handleDeleteInstruction = (i) => {
-
-        console.log(i)
-        const index = i;
-        const copyInstructions = [...state.instructions];
-
-        const newInstructions =copyInstructions.filter((instruction, i) => {
-            return i !== index;
-        })
-        console.log(newInstructions)
-        setStateField('instructions', newInstructions);
+        // const newInstructions = [...state.instructions];
+        // setStateField('instructions', newInstructions.splice(i, 0));
     }
 
     const isAddIngredientButtonDisabled = state.ingredients.some((ingredient) => {
@@ -115,22 +111,16 @@ const AddRecipe = () => {
         return instruction.instructionText.trim() === '';
     });
 
-
     return (
-        <div className='new-recipe-display'>
-            <CopyRecipe state={state} setState={setState} />
-            <div className='center-box'>
-                <div className='center-line'></div>
-            </div>
-            <form className='form-div' onSubmit={postAddRecipeForm}>
-                <h4>From Scratch:</h4>
+        <div className='modal-backdrop' >
+            <form className='edit-form-div' onSubmit={putEditRecipeForm}>
                 <div className='double-form'>
                     <div className='form-input'>
-                        <label htmlFor='recipeTitle'>Title of your Recipe</label>
+                        <label htmlFor='recipeTitle'>Title</label>
                         <input type="text" placeholder='Recipe Name' name="title" value={state.title} onChange={handleNameChange} />
                     </div>
                     <div className='form-input'>
-                        <label htmlFor='imageURL'>Paste the image URL</label>
+                        <label htmlFor='imageURL'>Image URL</label>
                         <input type="text" placeholder='Image URL' name="imageURL" value={state.imageURL} onChange={handleImageURLChange} />
                     </div>
                 </div>
@@ -185,6 +175,7 @@ const AddRecipe = () => {
                     <button disabled={isAddInstructionButtonDisabled} type='button' onClick={handleAddInstruction}>Next instruction</button>
                 </div>
                 <div className='form-submit'>
+                    <button type='button' onClick={props.onCancel}>CLOSE THIS MODAL!</button>
                     <button type='submit' className='copy-submit-btn'>Submit</button>
                 </div>
             </form >
@@ -192,4 +183,4 @@ const AddRecipe = () => {
     )
 }
 
-export default AddRecipe;
+export default EditModal;

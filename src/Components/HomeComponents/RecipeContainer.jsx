@@ -19,19 +19,17 @@ const RecipeContainer = () => {
         getRecipeCards();
     }, []);
 
-    const recipeDisplay = recipeCards.map((pictureAndTitle) => {
+    const recipeDisplay = recipeCards.map((recipe) => {
         return (
-            <RecipeCard recipe={pictureAndTitle} />
+            <RecipeCard key={recipe.recipe_id} recipe={recipe} />
         )
     });
 
 
     return (
-        <section className='recipe-section'>
             <div className="recipe-gallery">
                 {recipeDisplay}
             </div>
-        </section>
     )
 }
 

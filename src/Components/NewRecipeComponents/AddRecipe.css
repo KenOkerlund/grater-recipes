@@ -1,19 +1,93 @@
-.new-recipe-display{
+.new-recipe-display {
+    display: flex;
+    justify-content: center;
+    min-width: 800px;
+    max-width: 1200px;
+    min-height: 400px;
+    gap: 5px;
+    margin: 50px 0px;
+    background-color: lightgoldenrodyellow;
+    padding: 25px 25px;
+}
+
+.form-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* border: 1px solid black; */
+    min-height: inherit;
+    min-width: 400px;
+    gap: 25px;
+    padding: 10px;
+    padding-left: 20px;
+}
+
+.double-form{
+    min-width: inherit;
+    display: flex;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 3px;
+}
+
+.can-delete{
+    display: flex;
+    gap: 10px;
+}
+
+.form-field-delete{
+    
+}
+
+input {
+    border: 1px solid black;
+    width: 90%;
+    border-radius: 5px;
+}
+
+.form-submit {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0px 10px 10px 0px;
+}
+
+.long{
+    width: 95%;
+}
+
+.add-button-div{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.center-box{
+    width: 1px;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
-.copy-recipe{
-    display: flex;
-    flex-direction: column;
+.center-line{
+    width: inherit;
+    height: 95%;
+    background-color: black;
 }
 
-.add-recipe{
-    display: flex;
-    flex-direction: column;
+h4{
+    font-weight: bold;
+    font-size: 1.5rem;
 }
 
-.form-div{
-    padding: 10px 10px 10px 10px;
+label{
+    font-weight: bold;
+    font-size: 1.1rem;
 }

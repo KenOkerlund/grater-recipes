@@ -1,16 +1,12 @@
 .banner {
     height: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-image: url('../ElementComponents/food.jpg');
     background-size: cover;
     opacity: 70%;
-}
-
-img{
-    height: 100px;
-    width: 100px;
 }
 
 .search {

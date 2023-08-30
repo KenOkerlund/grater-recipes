@@ -1,12 +1,7 @@
-.recipe-section {    
-    border-top: 1px solid black;
-    height: 100px;
-    width: 100vw;
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .recipe-gallery {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 100px;
+    padding: 50px 50px;
 }

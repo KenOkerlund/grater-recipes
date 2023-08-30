@@ -16,9 +16,8 @@ const Header = () => {
     return <div className="header">
         <div className='logo'>LOGO</div>
         <div className='nav'>
-            <div className='home' onClick={handleHomeClick}>Home</div>
-            <div className='add-recipe'onClick={handleAddClick}>Add Recipe</div>
-            <div className='copy-recipe'>Copy Recipe</div>
+            <div onClick={handleHomeClick}>Home</div>
+            <div onClick={handleAddClick}>Add Recipe</div>
         </div>
     </div>
 }

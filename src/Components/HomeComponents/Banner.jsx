@@ -1,5 +1,5 @@
 import './Banner.css'
-import bannerLogo from '../ElementComponents/food.jpg';
+// import bannerLogo from '../ElementComponents/food.jpg';
 
 const Banner = () => {
     return <div className='banner'>

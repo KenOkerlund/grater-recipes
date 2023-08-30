@@ -1,6 +1,6 @@
 import './RecipeCard.css'
 
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const RecipeCard = ({ recipe }) => {
 
@@ -11,14 +11,9 @@ const RecipeCard = ({ recipe }) => {
     }
 
     return (
-        <div className='card'>
-            <div>
-                <div className='card-image'>
-                    <img src={recipe.recipe_image} />
-                </div>
-                <h4>{recipe.recipe_name}</h4>
-            </div>
-            <button onClick={handleClick}>See Recipe</button>
+        <div className='card' onClick={handleClick}>
+            <img src={recipe.recipe_image} alt="Food" className="gallery-image" />
+            <h6 className='card-title'>{recipe.recipe_name}</h6>
         </div>
     )
 

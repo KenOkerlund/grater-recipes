@@ -1,19 +1,14 @@
 .header {
     height: 50px;
-    width: 100vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #1C2826;
-    color: #EEEEEE;
-}
-
-.logo {
-    
+    background-color: #3e5f5c ;
+    color: #F4F9F4;
 }
 
 .nav {
-    width: 25vw;
+    min-width: 300px;
     display: flex;
     justify-content: space-evenly;
 }
