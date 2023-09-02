@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DetailImage from './DetailImage';
 import ConfirmModal from '../ElementComponents/ConfirmModal';
-import AlterQuantity from './AlterQuantity';
 
 import './DetailScreen.css'
 import EditModal from '../ElementComponents/EditModal';
@@ -17,12 +16,16 @@ const DetailScreen = () => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
+    // document.onkeydown = function (evt) {
+    //     if (evt.key === "Escape") {
+    //         toggleIsDeleting();
+    //     }
+    // };
 
     useEffect(() => {
         axios.get(`http://localhost:5432/recipe/${id}`)
             .then(res => {
                 setRecipe(res.data[0]);
-                console.log(res.data[0]);
             }).finally(() => {
                 setIsLoading(false);
             })
@@ -31,12 +34,11 @@ const DetailScreen = () => {
     const handleDelete = () => {
         axios.delete(`http://localhost:5432/recipe/${id}/delete`)
             .then(res => {
-                console.log(res)
             }).finally(() => {
                 navigate(`/`)
             })
     };
-
+    
     const toggleIsDeleting = () => {
         setIsDeleting(!isDeleting);
     };
@@ -67,28 +69,27 @@ const DetailScreen = () => {
                             <h1 className='recipe-card-title'>{recipe.recipe_name}</h1>
                             <div className='recipe-card-about'>
                                 <p>{recipe.servings} servings</p>
-                                <p>{recipe.time_to_make}</p>
+                                <p>{recipe.time_to_make} minutes</p>
                             </div>
                         </div>
                         <div className='recipe-card-quantity-ingredients'>
                             <div className='recipe-card-ingredients'>
                                 <h2>INGREDIENTS</h2>
-                                <AlterQuantity recipe={recipe}/>
                             </div>
-                            <div>
-                                {recipe.quantity_ingredient.map((ing, i) => {
-                                    return <><li key={i}>{ing.quantity} {ing.ingredient}</li><br /></>
+                            <ul>
+                                {recipe.quantity_ingredient.map((ingredient, i) => {
+                                    return <li className='recipe-list' key={ingredient.id}>{ingredient.ingredient}</li>
                                 })}
-                            </div>
+                            </ul>
                         </div>
                     </div>
                     <div className='recipe-right-side'>
                         <h1 className='recipe-card-directions'>Directions</h1>
-                        <div>
-                            {recipe.instruction.map((instr, i) => {
-                                return <><p key={i}>{i + 1}{"."} {instr.instructionText} </p><br /></>
+                        <ol>
+                            {recipe.instruction.map((instruction, i) => {
+                                return <li className='recipe-list' key={instruction.id}>{instruction.instructionText} </li>
                             })}
-                        </div>
+                        </ol>
                     </div>
                 </div>
 

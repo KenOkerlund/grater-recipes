@@ -1,8 +1,15 @@
 import './ConfirmModal.css'
 
 const ConfirmModal = (props) => {
+
+    const handleBackdropClick = (e) => {
+        if(e.currentTarget === e.target){
+            props.onCancel();
+        };
+    };
+
     return (
-        <div className="modal-backdrop" onClick={props.onCancel}>
+        <div className="modal-backdrop" onClick={handleBackdropClick}>
             <div className="confirm-modal">
                 <div className="modal-header">
                     <h2 className="modal-header-content">Deleting Recipe</h2>

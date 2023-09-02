@@ -4,33 +4,45 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-function filterNonDigitsAndMakeNumber(stringWithPossibleNonDigits) {
-    return Number(stringWithPossibleNonDigits.replace(/[^0-9]/g, ''));
-};
-
 
 const EditModal = (props) => {
     const [state, setState] = useState({
-        title: "",
-        imageURL: "",
-        servings: 0,
-        timeToMake: 0,
-        ingredients: [
-            {
-                quantity: "",
-                ingredient: '',
-            },
-        ],
-        instructions: [
-            {
-                instructionText: ''
-            }
-        ]
+        id: props.recipe.recipe_id,
+        title: props.recipe.recipe_name,
+        imageURL: props.recipe.recipe_image,
+        servings: props.recipe.servings,
+        timeToMake: props.recipe.time_to_make,
+        ingredients: props.recipe.quantity_ingredient,
+        instructions: props.recipe.instruction
     });
 
-    const putEditRecipeForm = () => {
+    const handleBackdropClick = (e) => {
+        if (e.currentTarget === e.target) {
+            props.onCancel();
+        };
+    };
 
-    }
+    useEffect(() => {
+        const listener = (evt) => {
+            if (evt.key === "Escape") {
+                props.onCancel();
+            };
+        };
+
+        window.addEventListener('keydown', listener);
+
+        return () => {
+            window.removeEventListener('keydown', listener);
+        }
+    }, []);
+
+
+    const putEditRecipeForm = (evt) => {
+        axios.put(`http://localhost:5432/recipe/edit`, { body: state })
+            .then(res => {
+                console.log(res)
+            })
+    };
 
     const setStateField = (name, value) => {
         setState({
@@ -39,50 +51,31 @@ const EditModal = (props) => {
         });
     };
 
-    useEffect(() => {
-        updateTheStateWithCurrentRecipe();
-    }, []);
-
-    const setStateOnLoad = (name, value) => {
-        setState({
-            [name]: value 
-        });
-    };
-
-    function updateTheStateWithCurrentRecipe() {
-        // setStateOnLoad('title', props.recipe.recipe_name);
-        // setStateOnLoad('imageURL', props.recipe.recipe_image);
-        // setStateOnLoad('servings', props.recipe.servings);
-        // setStateOnLoad('timeToMake', props.recipe.time_to_make);
-        // setStateOnLoad('ingredients', props.recipe.quantity_ingredient);
-        // setStateOnLoad('instructions', props.recipe.instruction);
-    }
-
     const handleNameChange = (e) => setStateField('title', e.target.value);
     const handleImageURLChange = (e) => setStateField('imageURL', e.target.value);
-    const handleServingsChange = (e) => setStateField('servings', filterNonDigitsAndMakeNumber(e.target.value));
-    const handleTimeToMakeChange = (e) => setStateField('timeToMake', filterNonDigitsAndMakeNumber(e.target.value));
+    const handleServingsChange = (e) => setStateField('servings', e.target.value);
+    const handleTimeToMakeChange = (e) => setStateField('timeToMake', e.target.value);
 
-    const handleIngredientQuantityChange = (e, i) => {
-        const newIngredients = [...state.ingredients];
-        // newIngredients[i].quantity = filterNonDigitsAndMakeNumber(e.target.value);
-        // newIngredients[i].quantity = filterNonDigitsAndSlash(e.target.value);
-        newIngredients[i].quantity = e.target.value;
-        setStateField("ingredients", newIngredients);
-    };
-
-    const handleIngredientIngredientChange = (e, i) => {
+    const handleIngredientChange = (e, i) => {
         const newIngredients = [...state.ingredients];
         newIngredients[i].ingredient = e.target.value;
         setStateField("ingredients", newIngredients);
     };
 
     const handleAddIngredient = () => {
+        const newId = Math.max(...state.ingredients.map((ingredient) => ingredient.id)) + 1;
         const newIngredients = [...state.ingredients, {
-            quantity: "",
+            id: newId,
             ingredient: ""
         }];
-        setStateField('ingredients', newIngredients)
+        console.log(newId);
+        setStateField('ingredients', newIngredients);
+    };
+
+    const handleDeleteIngredient = (i) => {
+        const copyIngredient = [...state.ingredients];
+        copyIngredient.splice(i, 1);
+        setStateField('ingredients', copyIngredient);
     };
 
     const handleInstructionChange = (e, i) => {
@@ -99,9 +92,10 @@ const EditModal = (props) => {
     };
 
     const handleDeleteInstruction = (i) => {
-        // const newInstructions = [...state.instructions];
-        // setStateField('instructions', newInstructions.splice(i, 0));
-    }
+        const copyInstructions = [...state.instructions];
+        copyInstructions.splice(i, 1);
+        setStateField('instructions', copyInstructions);
+    };
 
     const isAddIngredientButtonDisabled = state.ingredients.some((ingredient) => {
         return ingredient.quantity === '' || ingredient.quantity === 0 || ingredient.ingredient.trim() === '';
@@ -111,8 +105,11 @@ const EditModal = (props) => {
         return instruction.instructionText.trim() === '';
     });
 
+    const shouldShowIngredientDeleteButton = state.ingredients.length > 1;
+    const shouldShowInstructionsDeleteButton = state.instructions.length > 1;
+
     return (
-        <div className='modal-backdrop' >
+        <div className='modal-backdrop' onClick={handleBackdropClick}>
             <form className='edit-form-div' onSubmit={putEditRecipeForm}>
                 <div className='double-form'>
                     <div className='form-input'>
@@ -139,21 +136,11 @@ const EditModal = (props) => {
                         <label htmlFor='ingredient'>Ingredient</label>
                         {state.ingredients.map((ingredient, i) => {
                             return (
-                                <div key={i}>
-                                    <input type="text" placeholder='Measurement and Ingredient' name="ingredient" value={ingredient.ingredient} onChange={(e) => handleIngredientIngredientChange(e, i)} />
+                                <div key={i} className='can-delete'>
+                                    <input type="text" className='long' placeholder='Measurement and Ingredient' name="ingredient" value={ingredient.ingredient} onChange={(e) => handleIngredientChange(e, i)} />
+                                    {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
                                 </div>
                             )
-                        })}
-                    </div>
-                    <div className='form-input'>
-                        <label htmlFor="quantity">Quantity</label>
-                        {state.ingredients.map((ingredient, i) => {
-                            return (
-                                <div key={i} className='can-delete'>
-                                    <input type="text" placeholder='Quantity' name="quantity" value={ingredient.quantity} onChange={(e) => handleIngredientQuantityChange(e, i)} />
-                                    <button type='button' className='form-field-delete'>X</button>
-                                </div>
-                            );
                         })}
                     </div>
                 </div>
@@ -164,9 +151,9 @@ const EditModal = (props) => {
                     <label htmlFor='instruction'>Instruction</label>
                     {state.instructions.map((instruction, i) => {
                         return (
-                            <div key={i} className='can-delete'>
-                                <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instruction} onChange={(e) => handleInstructionChange(e, i)} />
-                                <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>
+                            <div key={instruction.id} className='can-delete'>
+                                <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instructionText} onChange={(e) => handleInstructionChange(e, i)} />
+                                {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
                             </div>
                         );
                     })}

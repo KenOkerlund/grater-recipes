@@ -1,5 +1,6 @@
 import './Header.css'
 import { useNavigate } from 'react-router';
+import image from '../ElementComponents/smallLogo1.png'
 
 const Header = () => {
 
@@ -14,7 +15,9 @@ const Header = () => {
     }
 
     return <div className="header">
-        <div className='logo'>LOGO</div>
+        <div className='logo'>
+            <img src={image} alt="logo" className='company-logo'/>
+        </div>
         <div className='nav'>
             <div onClick={handleHomeClick}>Home</div>
             <div onClick={handleAddClick}>Add Recipe</div>

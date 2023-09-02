@@ -4,7 +4,8 @@ import RecipeCard from './RecipeCard'
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-const RecipeContainer = () => {
+const RecipeContainer = ({search}) => {
+        
 
     const [recipeCards, setRecipeCards] = useState([]);
 
@@ -19,11 +20,20 @@ const RecipeContainer = () => {
         getRecipeCards();
     }, []);
 
-    const recipeDisplay = recipeCards.map((recipe) => {
-        return (
-            <RecipeCard key={recipe.recipe_id} recipe={recipe} />
-        )
-    });
+    // const recipeDisplay = recipeCards.map((recipe) => {
+    //     return (
+    //         <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+    //     )
+    // });
+
+    const recipeDisplay = recipeCards.filter((recipe) => {
+        let title = recipe.recipe_name.toLowerCase();
+        let searchParams = search.toLowerCase();
+        return title.includes(searchParams)
+    })
+    .map((recipe) => {
+        return <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+    })
 
 
     return (

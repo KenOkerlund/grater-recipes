@@ -1,25 +1,8 @@
-/*
-Need to:
-
-1. be able to delete form rows in case someone messes up data entry
-
-Find a way to be able to limit my quantity string to just digits and "/"
-*/
-
 import './AddRecipe.css'
 
 import { useState } from 'react';
 import axios from 'axios';
 import CopyRecipe from './CopyRecipe';
-
-function filterNonDigitsAndMakeNumber(stringWithPossibleNonDigits) {
-    return Number(stringWithPossibleNonDigits.replace(/[^0-9]/g, ''));
-};
-
-function filterNonDigitsAndSlash(stringWithPossibleNonDigitsOrSlash) {
-    return stringWithPossibleNonDigitsOrSlash.replace(/^[0-9\/]*$/)
-}
-
 
 const AddRecipe = () => {
     const [state, setState] = useState({
@@ -29,13 +12,14 @@ const AddRecipe = () => {
         timeToMake: 0,
         ingredients: [
             {
-                quantity: "",
+                id: 0,
                 ingredient: '',
             },
         ],
         instructions: [
             {
-                instructionText: ''
+                id: 0,
+                instructionText: '',
             },
         ]
     });
@@ -56,29 +40,28 @@ const AddRecipe = () => {
 
     const handleNameChange = (e) => setStateField('title', e.target.value);
     const handleImageURLChange = (e) => setStateField('imageURL', e.target.value);
-    const handleServingsChange = (e) => setStateField('servings', filterNonDigitsAndMakeNumber(e.target.value));
-    const handleTimeToMakeChange = (e) => setStateField('timeToMake', filterNonDigitsAndMakeNumber(e.target.value));
+    const handleServingsChange = (e) => setStateField('servings', e.target.value);
+    const handleTimeToMakeChange = (e) => setStateField('timeToMake', e.target.value);
 
-    const handleIngredientQuantityChange = (e, i) => {
-        const newIngredients = [...state.ingredients];
-        // newIngredients[i].quantity = filterNonDigitsAndMakeNumber(e.target.value);
-        // newIngredients[i].quantity = filterNonDigitsAndSlash(e.target.value);
-        newIngredients[i].quantity = e.target.value;
-        setStateField("ingredients", newIngredients);
-    };
-
-    const handleIngredientIngredientChange = (e, i) => {
+    const handleIngredientChange = (e, i) => {
         const newIngredients = [...state.ingredients];
         newIngredients[i].ingredient = e.target.value;
         setStateField("ingredients", newIngredients);
     };
 
     const handleAddIngredient = () => {
+        const newId = Math.max(...state.ingredients.map((ingredient) => ingredient.id)) + 1;
         const newIngredients = [...state.ingredients, {
-            quantity: "",
+            id: newId,
             ingredient: ""
         }];
-        setStateField('ingredients', newIngredients)
+        setStateField('ingredients', newIngredients);
+    };
+
+    const handleDeleteIngredient = (i) => {
+        const copyIngredient = [...state.ingredients];
+        copyIngredient.splice(i, 1);
+        setStateField('ingredients', copyIngredient);
     };
 
     const handleInstructionChange = (e, i) => {
@@ -88,24 +71,19 @@ const AddRecipe = () => {
     };
 
     const handleAddInstruction = () => {
+        const newId = Math.max(...state.instructions.map((instruction) => instruction.id)) + 1;
         const newInstructions = [...state.instructions, {
+            id: newId,
             instructionText: ""
         }];
         setStateField('instructions', newInstructions);
     };
 
     const handleDeleteInstruction = (i) => {
-
-        console.log(i)
-        const index = i;
         const copyInstructions = [...state.instructions];
-
-        const newInstructions =copyInstructions.filter((instruction, i) => {
-            return i !== index;
-        })
-        console.log(newInstructions)
-        setStateField('instructions', newInstructions);
-    }
+        copyInstructions.splice(i, 1);
+        setStateField('instructions', copyInstructions);
+    };
 
     const isAddIngredientButtonDisabled = state.ingredients.some((ingredient) => {
         return ingredient.quantity === '' || ingredient.quantity === 0 || ingredient.ingredient.trim() === '';
@@ -115,6 +93,9 @@ const AddRecipe = () => {
         return instruction.instructionText.trim() === '';
     });
 
+    const shouldShowIngredientDeleteButton = state.ingredients.length > 1;
+    const shouldShowInstructionsDeleteButton = state.instructions.length > 1;
+
 
     return (
         <div className='new-recipe-display'>
@@ -122,7 +103,7 @@ const AddRecipe = () => {
             <div className='center-box'>
                 <div className='center-line'></div>
             </div>
-            <form className='form-div' onSubmit={postAddRecipeForm}>
+            <form className='form-div' onSubmit={(e) => e.preventDefault()}>
                 <h4>From Scratch:</h4>
                 <div className='double-form'>
                     <div className='form-input'>
@@ -149,21 +130,11 @@ const AddRecipe = () => {
                         <label htmlFor='ingredient'>Ingredient</label>
                         {state.ingredients.map((ingredient, i) => {
                             return (
-                                <div key={i}>
-                                    <input type="text" placeholder='Measurement and Ingredient' name="ingredient" value={ingredient.ingredient} onChange={(e) => handleIngredientIngredientChange(e, i)} />
+                                <div key={ingredient.id} className='can-delete'>
+                                    <input type="text" className='long' placeholder='Quantity and Ingredient' name="ingredient" value={ingredient.ingredient} onChange={(e) => handleIngredientChange(e, i)} />
+                                    {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
                                 </div>
                             )
-                        })}
-                    </div>
-                    <div className='form-input'>
-                        <label htmlFor="quantity">Quantity</label>
-                        {state.ingredients.map((ingredient, i) => {
-                            return (
-                                <div key={i} className='can-delete'>
-                                    <input type="text" placeholder='Quantity' name="quantity" value={ingredient.quantity} onChange={(e) => handleIngredientQuantityChange(e, i)} />
-                                    <button type='button' className='form-field-delete'>X</button>
-                                </div>
-                            );
                         })}
                     </div>
                 </div>
@@ -174,9 +145,9 @@ const AddRecipe = () => {
                     <label htmlFor='instruction'>Instruction</label>
                     {state.instructions.map((instruction, i) => {
                         return (
-                            <div key={i} className='can-delete'>
+                            <div key={instruction.id} className='can-delete'>
                                 <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instruction} onChange={(e) => handleInstructionChange(e, i)} />
-                                <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>
+                                {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
                             </div>
                         );
                     })}
@@ -185,7 +156,7 @@ const AddRecipe = () => {
                     <button disabled={isAddInstructionButtonDisabled} type='button' onClick={handleAddInstruction}>Next instruction</button>
                 </div>
                 <div className='form-submit'>
-                    <button type='submit' className='copy-submit-btn'>Submit</button>
+                    <button type="button" className='copy-submit-btn' onClick={postAddRecipeForm}>Submit</button>
                 </div>
             </form >
         </div>

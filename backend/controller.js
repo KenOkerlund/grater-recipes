@@ -45,47 +45,83 @@ const seed = (req, res) => {
         VALUES
         (1, 'Chocolate Chip Cookies', 'https://images.aws.nestle.recipes/original/5b069c3ed2feea79377014f6766fcd49_Original_NTH_Chocolate_Chip_Cookie.jpg', '10 Minutes', 36, '[
             {
-                "quantity": "1",
-                "ingredient": "Cup Salted Butter"
+                "id": "0",
+                "ingredient": "1 Cup Salted Butter"
             },
             {
-                "quantity": "1",
-                "ingredient": "Cup White Sugar"
+                "id": "1",
+                "ingredient": "1 Cup White Sugar"
             },
             {
-                "quantity": "1",
-                "ingredient": "Cup packed Brown Sugar"
+                "id": "2",
+                "ingredient": "1 Cup packed Brown Sugar"
             },
             {
-                "quantity": "2",
-                "ingredient": "Tsp Vanilla Extract"
+                "id": "3",
+                "ingredient": "2 Tsp Vanilla Extract"
             },
             {
-                "quantity": "2",
-                "ingredient": "Large Eggs"
+                "id": "4",
+                "ingredient": "2 Large Eggs"
             },
             {
-                "quantity": "3",
-                "ingredient": "Cups Flour"
+                "id": "5",
+                "ingredient": "3 Cups Flour"
             },
             {
-                "quantity": "1",
-                "ingredient": "Tsp Baking Soda"
+                "id": "6",
+                "ingredient": "1 Tsp Baking Soda"
             },
             {
-                "quantity": "1/2",
-                "ingredient": "Tsp Baking Powder"
+                "id": "7",
+                "ingredient": "1/2 Tsp Baking Powder"
             },
             {
-                "quantity": "1",
-                "ingredient": "Tsp Sea Salt"
+                "id": "8",
+                "ingredient": "1 Tsp Sea Salt"
             },
             {
-                "quantity": "2",
-                "ingredient": "Cups Chocolate Chips"
+                "id": "9",
+                "ingredient": "2 Cups Chocolate Chips"
             }
         ]', 
-        '[{"instructionText": "Preheat oven to 375 degrees F. Line a baking pan with parchment paper and set aside."},{"instructionText": "In a separate bowl mix flour, baking soda, salt, baking powder. Set aside."},{"instructionText": "Cream together butter and sugars until combined."},{"instructionText": "Beat in eggs and vanilla until fluffy."},{"instructionText": "Mix in the dry ingredients until combined."},{"instructionText": "Add 12 oz package of chocolate chips and mix well."},{"instructionText": "Roll 2-3 TBS (depending on how large you like your cookies) of dough at a time into balls and place them evenly spaced on your prepared cookie sheets."},{"instructionText": "Bake in preheated oven for approximately 8-10 minutes. Take them out when they are just BARELY starting to turn brown."},{"instructionText": "Let them sit on the baking pan for 2 minutes before removing to cooling rack."}]');
+        '[{
+          "id": "0",
+          "instructionText": "Preheat oven to 375 degrees F. Line a baking pan with parchment paper and set aside."
+        },
+          {
+            "id": "1",
+            "instructionText": "In a separate bowl mix flour, baking soda, salt, baking powder. Set aside."
+          },
+          {
+            "id": "2",
+            "instructionText": "Cream together butter and sugars until combined."
+          },
+          {
+            "id": "3",
+            "instructionText": "Beat in eggs and vanilla until fluffy."
+          },
+          {
+            "id": "4",
+            "instructionText": "Mix in the dry ingredients until combined."
+          },
+          {
+            "id": "5",
+            "instructionText": "Add 12 oz package of chocolate chips and mix well."
+          },
+          {
+            "id": "6",
+            "instructionText": "Roll 2-3 TBS (depending on how large you like your cookies) of dough at a time into balls and place them evenly spaced on your prepared cookie sheets."
+          },
+          {
+            "id": "7",
+            "instructionText": "Bake in preheated oven for approximately 8-10 minutes. Take them out when they are just BARELY starting to turn brown."
+          },
+          {
+            "id": "8",
+            "instructionText": "Let them sit on the baking pan for 2 minutes before removing to cooling rack."
+          }
+        ]');
     `
     )
     .then(() => {
@@ -109,7 +145,8 @@ function getRecipeCard(req, res) {
     .query(
       `SELECT recipe_id, recipe_image, recipe_name
     FROM recipes
-    WHERE user_id = 1;`
+    WHERE user_id = 1
+    ORDER BY LOWER(recipe_name);`
     )
     .then((dbRes) => res.status(200).send(dbRes[0]))
     .catch((err) => console.log(err));
@@ -117,7 +154,6 @@ function getRecipeCard(req, res) {
 
 function getRecipeDetails(req, res) {
   const { id } = req.params;
-  console.log(id);
   sequelize
     .query(`SELECT * FROM recipes WHERE recipe_id = '${id}'`)
     .then((dbRes) => res.status(200).send(dbRes[0]))
@@ -128,7 +164,6 @@ function postRecipeForm(req, res) {
   const { body } = req.body;
   const quantity_ingredient = JSON.stringify(body.ingredients);
   const instructionText = JSON.stringify(body.instructions);
-  console.log(body);
   sequelize
     .query(
       `INSERT INTO recipes (recipe_name, recipe_image, user_id, time_to_make, servings, quantity_ingredient, instruction)
@@ -140,11 +175,30 @@ function postRecipeForm(req, res) {
 
 function deleteRecipe(req, res) {
   const { id } = req.params;
-  sequelize.query(
-    `DELETE FROM recipes
-    WHERE recipe_id = '${id}'`  )
-  .then((dbRes) => console.log(dbRes))
-  .catch((err) => console.log(err))
+  sequelize
+    .query(
+      `DELETE FROM recipes
+    WHERE recipe_id = '${id}'`
+    )
+    .then((dbRes) => console.log(dbRes))
+    .catch((err) => console.log(err));
+
+  res.sendStatus(200);
+}
+
+function editRecipe(req, res) {
+  const { body } = req.body;
+  const quantity_ingredient = JSON.stringify(body.ingredients);
+  const instructionText = JSON.stringify(body.instructions);
+  sequelize
+    .query(
+      `UPDATE recipes
+    SET recipe_name = '${body.title}', recipe_image = '${body.imageURL}', time_to_make = '${body.timeToMake}', servings = '${body.servings}', quantity_ingredient = '${quantity_ingredient}', instruction = '${instructionText}'
+    WHERE recipe_id = '${body.id}';
+    `
+    )
+    .then((dbRes) => console.log(dbRes))
+    .catch((err) => console.log(err));
 
   res.sendStatus(200);
 }
@@ -156,4 +210,5 @@ module.exports = {
   getRecipeDetails,
   postRecipeForm,
   deleteRecipe,
+  editRecipe,
 };

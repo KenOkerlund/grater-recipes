@@ -12,3 +12,15 @@
     display: flex;
     justify-content: space-evenly;
 }
+
+.logo{
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.company-logo{
+    width: 75px;
+    height: 75px;
+}
