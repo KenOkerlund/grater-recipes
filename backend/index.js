@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const { PORT } = process.env;
 
-const { seed, getTest, getRecipeCard, getRecipeDetails, postRecipeForm, deleteRecipe, editRecipe } = require('./controller');
+const { seed, getTest, getRecipeCard, getRecipeDetails, postRecipeForm, deleteRecipe, editRecipe, copyRecipe } = require('./controller');
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.get('/recipe/:id', getRecipeDetails);
 
 //post the form data to create a new recipe
 app.post('/add-recipe/submit', postRecipeForm);
+app.post('/add-recipe/copy-recipe', copyRecipe)
 
 //delete the individual recipe based on parameter
 app.delete('/recipe/:id/delete', deleteRecipe)

@@ -146,7 +146,7 @@ const AddRecipe = () => {
                     {state.instructions.map((instruction, i) => {
                         return (
                             <div key={instruction.id} className='can-delete'>
-                                <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instruction} onChange={(e) => handleInstructionChange(e, i)} />
+                                <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instructionText} onChange={(e) => handleInstructionChange(e, i)} />
                                 {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
                             </div>
                         );
