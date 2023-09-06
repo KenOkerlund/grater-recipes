@@ -6,8 +6,10 @@
     min-height: 400px;
     gap: 5px;
     margin: 50px 0px;
-    background-color: lightgoldenrodyellow;
+    background-color: #f1f3f5;
     padding: 25px 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px gray;
 }
 
 .form-div {
@@ -31,22 +33,28 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 3px;
+    gap: 5px;
 }
 
 .can-delete{
     display: flex;
     gap: 10px;
-}
-
-.form-field-delete{
-    
+    align-items: center;
 }
 
 input {
-    border: 1px solid black;
+    border: 2px solid black;
     width: 90%;
+    height: 18px;
     border-radius: 5px;
+    padding-left: 5px;
+    font-family: 'Fira Sans Condensed', sans-serif
+}
+
+input:focus{
+    outline: none;
+    background-color: #0B0E11;
+    color: white;
 }
 
 .form-submit {
@@ -61,6 +69,10 @@ input {
 
 .long{
     width: 95%;
+}
+
+.short{
+    width: 15%;
 }
 
 .add-button-div{
@@ -90,4 +102,42 @@ h4{
 label{
     font-weight: bold;
     font-size: 1.1rem;
+}
+
+.form-field-delete{
+    width: 25px;
+    height: 20px;
+    border-radius: 5px;
+    background-color: #0B0E11;
+    color: white;
+}
+
+.copy-recipe-buttons{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+
+.copy-submit-btn{
+    background-color: #0B0E11;
+    color: white;
+    width: 110px;
+    height: 30px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.spicy-button{
+    margin-top: 50px;
+    background-color: #AC4007;
+    width: 150px;
+    height: 30px;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.spicy-button:hover{
+    transform: scale(1.1, 1.1);
 }

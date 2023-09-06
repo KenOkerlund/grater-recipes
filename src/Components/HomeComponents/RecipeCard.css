@@ -5,6 +5,11 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    box-shadow: 0 0 25px lightgray;
+}
+
+.card :hover{
+    box-shadow: 0 0 10px black;
 }
 
 .gallery-image {
@@ -25,4 +30,5 @@
     background-color: black;
     opacity: 70%;
     color: white;
+    text-align: center;
 }

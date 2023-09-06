@@ -5,3 +5,8 @@
     gap: 100px;
     padding: 50px 50px;
 }
+
+.missing-recipes{
+    font-weight: bold;
+    font-size: 2rem;
+}

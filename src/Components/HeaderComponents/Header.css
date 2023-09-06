@@ -1,16 +1,22 @@
 .header {
-    height: 50px;
+    height: 75px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #3e5f5c ;
-    color: #F4F9F4;
+    background-color: #F1F3F5;
 }
 
 .nav {
     min-width: 300px;
     display: flex;
     justify-content: space-evenly;
+    font-weight: bold;
+    font-size: 1.25rem;
+    font-family: 'Raleway', sans-serif
+}
+
+.nav button:hover{
+    color: #AC4007;
 }
 
 .logo{
@@ -21,6 +27,5 @@
 }
 
 .company-logo{
-    width: 75px;
-    height: 75px;
+    height: 60px;
 }

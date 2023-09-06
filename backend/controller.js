@@ -256,6 +256,95 @@ function copyRecipe(req, res) {
   // res.status(200).send(JSON.parse(dataFromEndpoint.GPT));
 }
 
+function createRecipe(req, res) {
+  const { body } = req.body;
+  const { RAPID_API_KEY } = process.env;
+
+  const apiChatBody = `You are allowed to access websites and scrape their data. Now, find me a recipe online where the title includes the words ${body} and present it the form of a valid JSON object.
+  That means there should be no new lines in your reply, and all keys and values should have double quotes, and whatever else is required to make a valid JSON response.
+  The recipe name (title), the image url of the picture of the recipe which needs to be the full url of the image address and I do not need the actual image I just need the URL to its path, the time it takes to make (in minutes only, do not include the word minutes), the servings (number only, do not include the word servings), the quantity and ingredients(all of them, even if they are for seperate purposes within the recipe), and the instructions.
+  It is important that the quantity-ingredient object has an array of objects with a unique id that increments by 1 for each ingredient object.
+  It is also important that the instructions object has an array of objects where each instruction step is a new object.
+  Do not number these steps, just get the text of the instruction.
+  Each object must have the unique id that increments by 1 for each instruction object.
+  Here is an example of what I am looking for:
+  {"title": "The name of the recipe", "imageURL": "The image of the recipe", "timeToMake": "The time it takes to make", "servings": "The amount of servings", "ingredients": [{"id": "1", "ingredient": "1 Cup of flour"}, {"id": "2", "ingredient": "1/2 TSP of baking soda"}], "instructions": [{"id": "1", "instructionText": "The first instruction"}, {"id": "2", "instructionText": "The second instruction"}]}
+  Reply only with the valid JSON object.
+  `;
+
+  const options = {
+    method: 'POST',
+    url: 'https://open-ai21.p.rapidapi.com/conversationgpt',
+    headers: {
+      'content-type': 'application/json',
+      'X-RapidAPI-Key': RAPID_API_KEY,
+      'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
+    },
+    data: {
+      messages: [
+        {
+          role: 'user',
+          content: apiChatBody,
+        }
+      ]
+    }
+  };
+
+  axios.request(options)
+    .then((response) => {
+      console.log(response.data)
+      res.status(200).send(JSON.parse(response.data.GPT))
+    })
+    .catch((error) => {
+      console.error(error)
+      res.status(424).send('Figure it out yourself :D');
+    });
+};
+
+function spicyRecipe(req, res) {
+  const { RAPID_API_KEY } = process.env;
+
+  const apiChatBody = `You are allowed to access websites and scrape their data. Now, I want to try out a new recipe but don't know what to try. So, I need you to find me a random recipe online and present it the form of a valid JSON object.
+  That means there should be no new lines in your reply, and all keys and values should have double quotes, and whatever else is required to make a valid JSON response.
+  The recipe name (title), the image url of the picture of the recipe which needs to be the full url of the image address and I do not need the actual image I just need the URL to its path, the time it takes to make (in minutes only, do not include the word minutes), the servings (number only, do not include the word servings), the quantity and ingredients(all of them, even if they are for seperate purposes within the recipe), and the instructions.
+  It is important that the quantity-ingredient object has an array of objects with a unique id that increments by 1 for each ingredient object.
+  It is also important that the instructions object has an array of objects where each instruction step is a new object.
+  Do not number these steps, just get the text of the instruction.
+  Each object must have the unique id that increments by 1 for each instruction object.
+  Here is an example of what I am looking for:
+  {"title": "The name of the recipe", "imageURL": "The image of the recipe", "timeToMake": "The time it takes to make", "servings": "The amount of servings", "ingredients": [{"id": "1", "ingredient": "1 Cup of flour"}, {"id": "2", "ingredient": "1/2 TSP of baking soda"}], "instructions": [{"id": "1", "instructionText": "The first instruction"}, {"id": "2", "instructionText": "The second instruction"}]}
+  Reply only with the valid JSON object.
+  `;
+
+  const options = {
+    method: 'POST',
+    url: 'https://open-ai21.p.rapidapi.com/conversationgpt',
+    headers: {
+      'content-type': 'application/json',
+      'X-RapidAPI-Key': RAPID_API_KEY,
+      'X-RapidAPI-Host': 'open-ai21.p.rapidapi.com'
+    },
+    data: {
+      messages: [
+        {
+          role: 'user',
+          content: apiChatBody,
+        }
+      ]
+    }
+  };
+
+  axios.request(options)
+    .then((response) => {
+      console.log(response.data)
+      res.status(200).send(JSON.parse(response.data.GPT))
+    })
+    .catch((error) => {
+      console.error(error)
+      res.status(424).send('Figure it out yourself :D');
+    });
+}
+
 module.exports = {
   seed,
   getTest,
@@ -265,4 +354,6 @@ module.exports = {
   deleteRecipe,
   editRecipe,
   copyRecipe,
+  createRecipe,
+  spicyRecipe,
 };

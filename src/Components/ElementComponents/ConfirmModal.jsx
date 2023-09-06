@@ -18,7 +18,7 @@ const ConfirmModal = (props) => {
                     <p>Are you sure you want to delete {props.recipeTitle}?</p>
                     <div className="modal-actions">
                         <button className="modal-cancel-button" onClick={props.onCancel} >Cancel</button>
-                        <button className="modal-delete-button" onClick={props.onDelete} >Delete</button>
+                        <button className="modal-confirm-button" onClick={props.onDelete} >Delete</button>
                     </div>
                 </div>
             </div>

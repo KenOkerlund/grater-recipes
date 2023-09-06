@@ -1,8 +1,7 @@
 import './EditModal.css'
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
 
 
 const EditModal = (props) => {
@@ -16,6 +15,9 @@ const EditModal = (props) => {
         instructions: props.recipe.instruction
     });
 
+    const lastInstructionInputRef = useRef();
+    const lastIngredientInputRef = useRef();
+
     const handleBackdropClick = (e) => {
         if (e.currentTarget === e.target) {
             props.onCancel();
@@ -28,20 +30,22 @@ const EditModal = (props) => {
                 props.onCancel();
             };
         };
-
         window.addEventListener('keydown', listener);
 
         return () => {
             window.removeEventListener('keydown', listener);
         }
-    }, []);
+    }, [props]);
 
 
-    const putEditRecipeForm = (evt) => {
+    const putEditRecipeForm = () => {
         axios.put(`http://localhost:5432/recipe/edit`, { body: state })
             .then(res => {
                 console.log(res)
-            })
+                props.onCancel();
+            }).finally(
+                window.location.reload(true)
+            )
     };
 
     const setStateField = (name, value) => {
@@ -68,8 +72,10 @@ const EditModal = (props) => {
             id: newId,
             ingredient: ""
         }];
-        console.log(newId);
         setStateField('ingredients', newIngredients);
+        setTimeout(() => {
+            lastIngredientInputRef.current.focus();
+        }, 0);
     };
 
     const handleDeleteIngredient = (i) => {
@@ -89,6 +95,9 @@ const EditModal = (props) => {
             instructionText: ""
         }];
         setStateField('instructions', newInstructions);
+        setTimeout(() => {
+            lastInstructionInputRef.current.focus();
+        }, 0);
     };
 
     const handleDeleteInstruction = (i) => {
@@ -108,9 +117,27 @@ const EditModal = (props) => {
     const shouldShowIngredientDeleteButton = state.ingredients.length > 1;
     const shouldShowInstructionsDeleteButton = state.instructions.length > 1;
 
+    const handleKeypressOnIngredients = (e, i) => {
+        if (isAddIngredientButtonDisabled) {
+            return;
+        }
+        if (e.key === 'Enter') {
+            handleAddIngredient();
+        }
+    };
+
+    const handleKeypressOnInstructions = (e, i) => {
+        if (isAddInstructionButtonDisabled) {
+            return;
+        }
+        if (e.key === 'Enter') {
+            handleAddInstruction();
+        }
+    };
+
     return (
         <div className='modal-backdrop' onClick={handleBackdropClick}>
-            <form className='edit-form-div' onSubmit={putEditRecipeForm}>
+            <form className='edit-form-div' onSubmit={(e) => e.preventDefault()}>
                 <div className='double-form'>
                     <div className='form-input'>
                         <label htmlFor='recipeTitle'>Title</label>
@@ -131,39 +158,53 @@ const EditModal = (props) => {
                         <input type="text" placeholder='Time to make' name="timeToMake" value={state.timeToMake} onChange={handleTimeToMakeChange} />
                     </div>
                 </div>
-                <div className='double-form'>
-                    <div className='form-input'>
-                        <label htmlFor='ingredient'>Ingredient</label>
-                        {state.ingredients.map((ingredient, i) => {
-                            return (
-                                <div key={i} className='can-delete'>
-                                    <input type="text" className='long' placeholder='Measurement and Ingredient' name="ingredient" value={ingredient.ingredient} onChange={(e) => handleIngredientChange(e, i)} />
-                                    {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
-                                </div>
-                            )
-                        })}
-                    </div>
+                <div className='text-form-input'>
+                    <label htmlFor='ingredient'>Ingredient</label>
+                    {state.ingredients.map((ingredient, i) => {
+                        return (
+                            <div key={i} className='can-delete'>
+                                <input
+                                    type="text"
+                                    className='long'
+                                    placeholder='Measurement and Ingredient'
+                                    name="ingredient"
+                                    value={ingredient.ingredient}
+                                    ref={i === state.ingredients.length - 1 ? lastIngredientInputRef : null}
+                                    onKeyPress={(e) => handleKeypressOnIngredients(e, i)}
+                                    onChange={(e) => handleIngredientChange(e, i)} />
+                                {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
+                            </div>
+                        )
+                    })}
                 </div>
                 <div className='add-button-div'>
-                    <button disabled={isAddIngredientButtonDisabled} type="button" onClick={handleAddIngredient}>Next ingredient</button>
+                    <button disabled={isAddIngredientButtonDisabled} type="button" className='add-button' onClick={handleAddIngredient}>Add ingredient</button>
                 </div>
-                <div className='form-input'>
+                <div className='text-form-input'>
                     <label htmlFor='instruction'>Instruction</label>
                     {state.instructions.map((instruction, i) => {
                         return (
                             <div key={instruction.id} className='can-delete'>
-                                <input type="text" className='long' placeholder='Instruction' name="instruction" value={instruction.instructionText} onChange={(e) => handleInstructionChange(e, i)} />
+                                <input
+                                    type="text"
+                                    className='long'
+                                    placeholder='Instruction'
+                                    name="instruction"
+                                    value={instruction.instructionText}
+                                    ref={i === state.instructions.length - 1 ? lastInstructionInputRef : null}
+                                    onKeyPress={(e) => handleKeypressOnInstructions(e, i)}
+                                    onChange={(e) => handleInstructionChange(e, i)} />
                                 {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
                             </div>
                         );
                     })}
                 </div>
                 <div className='add-button-div'>
-                    <button disabled={isAddInstructionButtonDisabled} type='button' onClick={handleAddInstruction}>Next instruction</button>
+                    <button disabled={isAddInstructionButtonDisabled} type='button' className='add-button' onClick={handleAddInstruction}>Add instruction</button>
                 </div>
-                <div className='form-submit'>
-                    <button type='button' onClick={props.onCancel}>CLOSE THIS MODAL!</button>
-                    <button type='submit' className='copy-submit-btn'>Submit</button>
+                <div className='edit-form-submit'>
+                    <button type='button' className='modal-cancel-button' onClick={props.onCancel}>Cancel</button>
+                    <button type='submit' className='modal-confirm-button' onClick={putEditRecipeForm}>Save</button>
                 </div>
             </form >
         </div>

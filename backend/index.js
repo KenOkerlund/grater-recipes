@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const { PORT } = process.env;
 
-const { seed, getTest, getRecipeCard, getRecipeDetails, postRecipeForm, deleteRecipe, editRecipe, copyRecipe } = require('./controller');
+const { seed, getTest, getRecipeCard, getRecipeDetails, postRecipeForm, deleteRecipe, editRecipe, copyRecipe, createRecipe, spicyRecipe } = require('./controller');
 
 const app = express();
 
@@ -26,7 +26,12 @@ app.get('/recipe/:id', getRecipeDetails);
 
 //post the form data to create a new recipe
 app.post('/add-recipe/submit', postRecipeForm);
-app.post('/add-recipe/copy-recipe', copyRecipe)
+//autofill the form based on a website
+app.post('/add-recipe/copy-recipe', copyRecipe);
+//find a recipe that matches the title we sent in
+app.post('/add-recipe/create-recipe', createRecipe)
+//create a random recipe unknown to the user
+app.post('/add-recipe/spicy', spicyRecipe);
 
 //delete the individual recipe based on parameter
 app.delete('/recipe/:id/delete', deleteRecipe)

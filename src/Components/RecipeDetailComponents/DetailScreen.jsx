@@ -6,6 +6,7 @@ import ConfirmModal from '../ElementComponents/ConfirmModal';
 
 import './DetailScreen.css'
 import EditModal from '../ElementComponents/EditModal';
+import LoadingModal from '../ElementComponents/LoadingModal';
 
 const DetailScreen = () => {
     const { id } = useParams();
@@ -48,7 +49,7 @@ const DetailScreen = () => {
     };
 
     if (isLoading) {
-        return <>Loading...</>;
+        return <LoadingModal />;
     }
 
     return (
@@ -58,8 +59,8 @@ const DetailScreen = () => {
             {!isLoading && <div className='recipe-display'>
                 <div className='recipe-display-header'>
                     <div className='recipe-edit-delete'>
-                        <button className='transparent' onClick={toggleIsEditing}>Edit</button>
-                        <button className='transparent' onClick={toggleIsDeleting}>Delete</button>
+                        <button className='form-header-button' onClick={toggleIsEditing}>Edit</button>
+                        <button className='form-header-button' onClick={toggleIsDeleting}>Delete</button>
                     </div>
                     <DetailImage recipe_image={recipe.recipe_image} />
                 </div>
@@ -84,7 +85,7 @@ const DetailScreen = () => {
                         </div>
                     </div>
                     <div className='recipe-right-side'>
-                        <h1 className='recipe-card-directions'>Directions</h1>
+                        <h2 className='recipe-card-directions'>DIRECTIONS</h2>
                         <ol>
                             {recipe.instruction.map((instruction, i) => {
                                 return <li className='recipe-list' key={instruction.id}>{instruction.instructionText} </li>

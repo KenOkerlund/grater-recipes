@@ -1,5 +1,6 @@
 import Banner from "./Banner";
 import RecipeContainer from "./RecipeContainer";
+import RecipeFilter from "./RecipeFilter";
 import {useState} from 'react';
 
 require('./HomeScreen.css');
@@ -10,7 +11,8 @@ const HomeScreen = () => {
 
     return (
         <div className="home-screen">
-            <Banner search={searchForRecipe} setSearch={setSearchForRecipe} />
+            <Banner />
+            <RecipeFilter search={searchForRecipe} setSearch={setSearchForRecipe}/>
             <RecipeContainer search={searchForRecipe} />
         </div>
     )
