@@ -28,6 +28,7 @@ function createState() {
 
 const AddRecipe = () => {
     const [state, setState] = useState(createState());
+    const [loadingRecipe, setLoadingRecipe] = useState(false);
     const lastInstructionInputRef = useRef();
     const lastIngredientInputRef = useRef();
 
@@ -108,7 +109,7 @@ const AddRecipe = () => {
         return instruction.instructionText.trim() === '';
     });
 
-    const isSubmitButtonDisabled = state.title.trim() === '' || state.imageURL.trim() === '' || state.servings === 0 || state.timeToMake === 0 || isAddIngredientButtonDisabled || isAddInstructionButtonDisabled;
+    const isSubmitButtonDisabled = state.title.trim() === '' || state.imageURL.trim() === '' || state.servings === 0 || state.timeToMake === 0 || isAddIngredientButtonDisabled || isAddInstructionButtonDisabled || loadingRecipe;
 
     const shouldShowIngredientDeleteButton = state.ingredients.length > 1;
     const shouldShowInstructionsDeleteButton = state.instructions.length > 1;
@@ -131,86 +132,91 @@ const AddRecipe = () => {
         }
     };
 
+    const handleResetAddForm = () => {
+        setState(createState());
+    }
+
     return (
-            <div className='new-recipe-display'>
-                <CopyRecipe state={state} setState={setState} />
-                <div className='center-box'>
-                    <div className='center-line'></div>
-                </div>
-                <form className='form-div' onSubmit={(e) => e.preventDefault()}>
-                    <h4>From Scratch:</h4>
-                    <div className='double-form'>
-                        <div className='form-input'>
-                            <label htmlFor='recipeTitle'>Title of your Recipe</label>
-                            <input type="text" placeholder='Recipe Name' name="title" value={state.title} onChange={handleNameChange} />
-                        </div>
-                        <div className='form-input'>
-                            <label htmlFor='imageURL'>Paste the image URL</label>
-                            <input type="text" placeholder='Image URL' name="imageURL" value={state.imageURL} onChange={handleImageURLChange} />
-                        </div>
-                    </div>
-                    <div className='double-form'>
-                        <div className='form-input'>
-                            <label htmlFor='servings'>Servings</label>
-                            <input type="number" placeholder='Servings' name="servings" value={state.servings} onChange={handleServingsChange} />
-                        </div>
-                        <div className='form-input'>
-                            <label htmlFor='timeToMake'>Time to make (minutes)</label>
-                            <input type="number" placeholder='Time to make' name="timeToMake" value={state.timeToMake} onChange={handleTimeToMakeChange} />
-                        </div>
-                    </div>
-                    <div className='double-form'>
-                        <div className='form-input'>
-                            <label htmlFor='ingredient'>Ingredient</label>
-                            {state.ingredients.map((ingredient, i) => {
-                                return (
-                                    <div key={ingredient.id} className='can-delete'>
-                                        <input
-                                            type="text"
-                                            className='long'
-                                            placeholder='Quantity and Ingredient'
-                                            name="ingredient"
-                                            value={ingredient.ingredient}
-                                            ref={i === state.ingredients.length - 1 ? lastIngredientInputRef : null}
-                                            onKeyPress={(e) => handleKeypressOnIngredients(e, i)}
-                                            onChange={(e) => handleIngredientChange(e, i)} />
-                                        {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    <div className='add-button-div'>
-                        <button disabled={isAddIngredientButtonDisabled} type="button" className='add-button' onClick={handleAddIngredient}>Add ingredient</button>
+        <div className='new-recipe-display'>
+            <CopyRecipe state={state} setState={setState} loadingRecipe={loadingRecipe} setLoadingRecipe={setLoadingRecipe} />
+            <div className='center-box'>
+                <div className='center-line'></div>
+            </div>
+            <form className='form-div' onSubmit={(e) => e.preventDefault()}>
+                <h4>From Scratch:</h4>
+                <div className='double-form'>
+                    <div className='form-input'>
+                        <label htmlFor='recipeTitle'>Title of your Recipe</label>
+                        <input type="text" placeholder='Recipe Name' name="title" value={state.title} onChange={handleNameChange} />
                     </div>
                     <div className='form-input'>
-                        <label htmlFor='instruction'>Instruction</label>
-                        {state.instructions.map((instruction, i) => {
+                        <label htmlFor='imageURL'>Paste the image URL</label>
+                        <input type="text" placeholder='Image URL' name="imageURL" value={state.imageURL} onChange={handleImageURLChange} />
+                    </div>
+                </div>
+                <div className='double-form'>
+                    <div className='form-input'>
+                        <label htmlFor='servings'>Servings</label>
+                        <input type="number" placeholder='Servings' name="servings" value={state.servings} onChange={handleServingsChange} />
+                    </div>
+                    <div className='form-input'>
+                        <label htmlFor='timeToMake'>Time to make (minutes)</label>
+                        <input type="number" placeholder='Time to make' name="timeToMake" value={state.timeToMake} onChange={handleTimeToMakeChange} />
+                    </div>
+                </div>
+                <div className='double-form'>
+                    <div className='form-input'>
+                        <label htmlFor='ingredient'>Ingredient</label>
+                        {state.ingredients.map((ingredient, i) => {
                             return (
-                                <div key={instruction.id} className='can-delete'>
+                                <div key={ingredient.id} className='can-delete'>
                                     <input
                                         type="text"
                                         className='long'
-                                        placeholder='Instruction'
-                                        name="instruction"
-                                        value={instruction.instructionText}
-                                        ref={i === state.instructions.length - 1 ? lastInstructionInputRef : null}
-                                        onKeyPress={(e) => handleKeypressOnInstructions(e, i)}
-                                        onChange={(e) => handleInstructionChange(e, i)}
-                                    />
-                                    {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
+                                        placeholder='Quantity and Ingredient'
+                                        name="ingredient"
+                                        value={ingredient.ingredient}
+                                        ref={i === state.ingredients.length - 1 ? lastIngredientInputRef : null}
+                                        onKeyPress={(e) => handleKeypressOnIngredients(e, i)}
+                                        onChange={(e) => handleIngredientChange(e, i)} />
+                                    {shouldShowIngredientDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteIngredient(i)}>X</button>}
                                 </div>
-                            );
+                            )
                         })}
                     </div>
-                    <div className='add-button-div'>
-                        <button disabled={isAddInstructionButtonDisabled} type='button' className='add-button' onClick={handleAddInstruction}>Add instruction</button>
-                    </div>
-                    <div className='form-submit'>
-                        <button type="button" disabled={isSubmitButtonDisabled} className='modal-confirm-button' onClick={postAddRecipeForm}>Submit</button>
-                    </div>
-                </form >
-            </div>
+                </div>
+                <div className='add-button-div'>
+                    <button disabled={isAddIngredientButtonDisabled} type="button" className='add-button' onClick={handleAddIngredient}>Add ingredient</button>
+                </div>
+                <div className='form-input'>
+                    <label htmlFor='instruction'>Instruction</label>
+                    {state.instructions.map((instruction, i) => {
+                        return (
+                            <div key={instruction.id} className='can-delete'>
+                                <input
+                                    type="text"
+                                    className='long'
+                                    placeholder='Instruction'
+                                    name="instruction"
+                                    value={instruction.instructionText}
+                                    ref={i === state.instructions.length - 1 ? lastInstructionInputRef : null}
+                                    onKeyPress={(e) => handleKeypressOnInstructions(e, i)}
+                                    onChange={(e) => handleInstructionChange(e, i)}
+                                />
+                                {shouldShowInstructionsDeleteButton && <button type='button' className='form-field-delete' onClick={() => handleDeleteInstruction(i)}>X</button>}
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className='add-button-div'>
+                    <button disabled={isAddInstructionButtonDisabled} type='button' className='add-button' onClick={handleAddInstruction}>Add instruction</button>
+                </div>
+                <div className='form-submit'>
+                    <button type='button' className='modal-cancel-button' disabled={loadingRecipe} onClick={handleResetAddForm}>Reset</button>
+                    <button type="button" disabled={isSubmitButtonDisabled} className='modal-confirm-button' onClick={postAddRecipeForm}>Submit</button>
+                </div>
+            </form >
+        </div>
     )
 }
 

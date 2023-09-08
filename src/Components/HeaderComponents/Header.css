@@ -6,8 +6,8 @@
     background-color: #F1F3F5;
 }
 
-.nav {
-    min-width: 300px;
+nav {
+    min-width: 350px;
     display: flex;
     justify-content: space-evenly;
     font-weight: bold;
@@ -15,7 +15,7 @@
     font-family: 'Raleway', sans-serif
 }
 
-.nav button:hover{
+nav button:hover{
     color: #AC4007;
 }
 

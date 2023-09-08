@@ -59,10 +59,10 @@ input:focus{
 
 .form-submit {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     flex: 1;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-evenly;
     align-items: flex-end;
     padding: 0px 10px 10px 0px;
 }

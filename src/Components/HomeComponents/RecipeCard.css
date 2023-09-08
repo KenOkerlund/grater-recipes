@@ -18,6 +18,10 @@
     object-fit: cover;
 }
 
+/* .gallery-image:hover{
+    box-shadow: 0 0 10px black;
+} */
+
 .card-title {
     height: 50px;
     position: absolute;
@@ -32,3 +36,7 @@
     color: white;
     text-align: center;
 }
+
+/* .card-title:hover{
+    box-shadow: none;
+} */

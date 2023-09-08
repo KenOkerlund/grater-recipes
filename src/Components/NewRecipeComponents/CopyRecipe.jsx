@@ -2,13 +2,8 @@ import './AddRecipe.css'
 import axios from 'axios';
 import { useState } from 'react';
 
-/**
- * @TODOs
- * Validate before sending to the BE that it is indeed a URL (don't allow the endpoint to be hit unless it is a valid url)
- */
 
-
-const CopyRecipe = ({ setState }) => {
+const CopyRecipe = ({ setState, loadingRecipe, setLoadingRecipe }) => {
 
     const [url, setUrl] = useState('');
     const [recipeIdea, setRecipeIdea] = useState('');
@@ -17,39 +12,44 @@ const CopyRecipe = ({ setState }) => {
         setUrl(e.target.value);
     };
 
-    function handleCreateRecipeChange(e){
+    function handleCreateRecipeChange(e) {
         setRecipeIdea(e.target.value);
     };
 
     function postCopyRecipeForm() {
+        setLoadingRecipe(true);
         axios.post('http://localhost:5432/add-recipe/copy-recipe', { body: url })
             .then(res => {
                 setState(res.data);
                 setUrl('');
+                setLoadingRecipe(false)
             })
             .catch(err => console.log(err));
     };
 
     function postCreateRecipeForm() {
+        setLoadingRecipe(true);
         axios.post('http://localhost:5432/add-recipe/create-recipe', { body: recipeIdea })
-        .then(res => {
-            setState(res.data);
-            setUrl('');
-        })
-        .catch(err => console.log(err));
-};
-
-    function handleSpicyButtonClick() {
-        axios.post(`http://localhost:5432/add-recipe/spicy`)
-        .then(res => {
-            setState(res.data);
-            setRecipeIdea('');
-        })
-        .catch(err => console.log(err));
+            .then(res => {
+                setState(res.data);
+                setRecipeIdea('');
+                setLoadingRecipe(false)
+            })
+            .catch(err => console.log(err));
     };
 
-    const isCopyRecipeButtonDisabled = !url.includes('.');
-    const isCreateRecipeButtonDisabled = recipeIdea.trim() === '';
+    function handleSpicyButtonClick() {
+        setLoadingRecipe(true);
+        axios.post(`http://localhost:5432/add-recipe/spicy`)
+            .then(res => {
+                setState(res.data);
+                setLoadingRecipe(false)
+            })
+            .catch(err => console.log(err));
+    };
+
+    const isCopyRecipeButtonDisabled = !url.includes('.') || loadingRecipe;
+    const isCreateRecipeButtonDisabled = recipeIdea.trim() === '' || loadingRecipe;
 
     return (
         <div className='form-div' >
@@ -69,7 +69,7 @@ const CopyRecipe = ({ setState }) => {
                 </div>
             </form>
             <div className='spicy-div'>
-                <button type='button' onClick={handleSpicyButtonClick} className='spicy-button'>I'm feeling SPICY!</button>
+                <button type='button' onClick={handleSpicyButtonClick} disabled={loadingRecipe} className='spicy-button'>I'm feeling SPICY!</button>
             </div>
         </div>
     )

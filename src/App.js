@@ -6,6 +6,8 @@ import HomeScreen from "./Components/HomeComponents/HomeScreen";
 import DetailScreen from './Components/RecipeDetailComponents/DetailScreen';
 import AddRecipe from "./Components/NewRecipeComponents/AddRecipe";
 
+
+
 function App() {
   return (
     <div className="App">
@@ -15,6 +17,7 @@ function App() {
           <Route index element={<HomeScreen />} />
           <Route path="/recipe/:id" element={<DetailScreen />} />
           <Route path="/add-recipe" element={<AddRecipe />} />
+          <Route path='*' element={<HomeScreen />} />
         </Routes>
       </main>
     </div>

@@ -154,6 +154,7 @@ function getRecipeCard(req, res) {
     .catch((err) => console.log(err));
 }
 
+//get the information about a specific recipe
 function getRecipeDetails(req, res) {
   const { id } = req.params;
   sequelize
@@ -162,6 +163,7 @@ function getRecipeDetails(req, res) {
     .catch((err) => console.log(err));
 }
 
+//Add a new recipe from the form
 function postRecipeForm(req, res) {
   const { body } = req.body;
   const quantity_ingredient = JSON.stringify(body.ingredients);
@@ -175,6 +177,7 @@ function postRecipeForm(req, res) {
     .catch((err) => console.log(err));
 }
 
+//delete a recipe
 function deleteRecipe(req, res) {
   const { id } = req.params;
   sequelize
@@ -188,6 +191,7 @@ function deleteRecipe(req, res) {
   res.sendStatus(200);
 }
 
+//edit a currently existing recipe
 function editRecipe(req, res) {
   const { body } = req.body;
   const quantity_ingredient = JSON.stringify(body.ingredients);
@@ -205,6 +209,7 @@ function editRecipe(req, res) {
   res.sendStatus(200);
 }
 
+//copy a recipe and present it ready for postRecipeForm
 function copyRecipe(req, res) {
   const { body } = req.body;
   const { RAPID_API_KEY } = process.env;
@@ -256,6 +261,7 @@ function copyRecipe(req, res) {
   // res.status(200).send(JSON.parse(dataFromEndpoint.GPT));
 }
 
+//get a recipe with a certain title and present it ready for postRecipeForm
 function createRecipe(req, res) {
   const { body } = req.body;
   const { RAPID_API_KEY } = process.env;
@@ -301,6 +307,7 @@ function createRecipe(req, res) {
     });
 };
 
+//purely random recipe
 function spicyRecipe(req, res) {
   const { RAPID_API_KEY } = process.env;
 
@@ -343,7 +350,8 @@ function spicyRecipe(req, res) {
       console.error(error)
       res.status(424).send('Figure it out yourself :D');
     });
-}
+};
+
 
 module.exports = {
   seed,

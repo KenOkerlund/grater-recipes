@@ -43,9 +43,7 @@ const EditModal = (props) => {
             .then(res => {
                 console.log(res)
                 props.onCancel();
-            }).finally(
-                window.location.reload(true)
-            )
+            })
     };
 
     const setStateField = (name, value) => {
@@ -151,11 +149,11 @@ const EditModal = (props) => {
                 <div className='double-form'>
                     <div className='form-input'>
                         <label htmlFor='servings'>Servings</label>
-                        <input type="text" placeholder='Servings' name="servings" value={state.servings} onChange={handleServingsChange} />
+                        <input type="number" placeholder='Servings' name="servings" value={state.servings} onChange={handleServingsChange} />
                     </div>
                     <div className='form-input'>
                         <label htmlFor='timeToMake'>Time to make (minutes)</label>
-                        <input type="text" placeholder='Time to make' name="timeToMake" value={state.timeToMake} onChange={handleTimeToMakeChange} />
+                        <input type="number" placeholder='Time to make' name="timeToMake" value={state.timeToMake} onChange={handleTimeToMakeChange} />
                     </div>
                 </div>
                 <div className='text-form-input'>

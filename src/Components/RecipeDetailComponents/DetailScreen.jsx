@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import DetailImage from './DetailImage';
 import ConfirmModal from '../ElementComponents/ConfirmModal';
@@ -9,7 +9,9 @@ import EditModal from '../ElementComponents/EditModal';
 import LoadingModal from '../ElementComponents/LoadingModal';
 
 const DetailScreen = () => {
-    const { id } = useParams();
+    const location = useLocation();
+    const id = location.pathname.split('/')[2];
+    // const { id } = useParams();
     const navigate = useNavigate();
 
     const [recipe, setRecipe] = useState({});
@@ -17,13 +19,7 @@ const DetailScreen = () => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
-    // document.onkeydown = function (evt) {
-    //     if (evt.key === "Escape") {
-    //         toggleIsDeleting();
-    //     }
-    // };
-
-    useEffect(() => {
+    const getRecipe = useCallback(() => {
         axios.get(`http://localhost:5432/recipe/${id}`)
             .then(res => {
                 setRecipe(res.data[0]);
@@ -31,6 +27,10 @@ const DetailScreen = () => {
                 setIsLoading(false);
             })
     }, [id]);
+
+    useEffect(() => {
+        getRecipe();
+    }, [getRecipe, id]);
 
     const handleDelete = () => {
         axios.delete(`http://localhost:5432/recipe/${id}/delete`)
@@ -46,6 +46,7 @@ const DetailScreen = () => {
 
     const toggleIsEditing = () => {
         setIsEditing(!isEditing);
+        getRecipe();
     };
 
     if (isLoading) {
