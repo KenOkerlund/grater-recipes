@@ -20,7 +20,12 @@ const CopyRecipe = ({ setState, loadingRecipe, setLoadingRecipe }) => {
         setLoadingRecipe(true);
         axios.post('http://localhost:5432/add-recipe/copy-recipe', { body: url })
             .then(res => {
-                setState(res.data);
+                if (typeof res.data === 'object') {
+                    setState(res.data);
+                }
+                else {
+                    alert('There was an error loading that data. Please try again later.')
+                }
                 setUrl('');
                 setLoadingRecipe(false)
             })
@@ -31,7 +36,12 @@ const CopyRecipe = ({ setState, loadingRecipe, setLoadingRecipe }) => {
         setLoadingRecipe(true);
         axios.post('http://localhost:5432/add-recipe/create-recipe', { body: recipeIdea })
             .then(res => {
-                setState(res.data);
+                if (typeof res.data === 'object') {
+                    setState(res.data);
+                }
+                else {
+                    alert('There was an error loading that data. Please try again later.')
+                }
                 setRecipeIdea('');
                 setLoadingRecipe(false)
             })
@@ -42,7 +52,12 @@ const CopyRecipe = ({ setState, loadingRecipe, setLoadingRecipe }) => {
         setLoadingRecipe(true);
         axios.post(`http://localhost:5432/add-recipe/spicy`)
             .then(res => {
-                setState(res.data);
+                if (typeof res.data === 'object') {
+                    setState(res.data);
+                }
+                else {
+                    alert('There was an error loading that data. Please try again later.')
+                }
                 setLoadingRecipe(false)
             })
             .catch(err => console.log(err));
